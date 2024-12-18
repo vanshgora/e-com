@@ -20,7 +20,6 @@ const orderSchema = new mongoose.Schema({
     }
 );
 
-// Add indexes for product and status fields
 orderSchema.index({ product: 1 });
 orderSchema.index({ status: 1 });
 

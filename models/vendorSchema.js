@@ -20,7 +20,6 @@ const vendorSchema = new mongoose.Schema({
 }
 );
 
-// Add an index for the email field
 vendorSchema.index({ email: 1 });
 
 const vendorModel = mongoose.models.vendor ||  mongoose.model('vendor', vendorSchema);
