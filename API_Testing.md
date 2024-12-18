@@ -1,84 +1,146 @@
-# API Testing with cURL
+# API Testing and Application Structure
 
-This document contains cURL commands for testing the API endpoints of the E-Commerce application. Use these commands to validate the functionality of each endpoint.
+## cURL Commands for Testing API Endpoints
 
----
+### Authentication
 
-## **Vendor Registration**
+#### Vendor Registration
 ```bash
-curl -X POST https://your-api-url/api/vendor/register \
+curl -X POST https://e-com-bnev.onrender.com/api/vendors/register \
 -H "Content-Type: application/json" \
 -d '{
-    "name": "Vendor Name",
-    "email": "vendor@example.com",
+    "name": "Vendor A",
+    "email": "vendorA@example.com",
     "password": "password123"
 }'
 ```
 
----
-
-## **Vendor Login**
+#### Vendor Login
 ```bash
-curl -X POST https://your-api-url/api/vendor/login \
+curl -X POST https://e-com-bnev.onrender.com/api/vendors/login \
 -H "Content-Type: application/json" \
 -d '{
-    "email": "vendor@example.com",
+    "email": "vendorA@example.com",
     "password": "password123"
 }'
 ```
 
----
+### Product Management
 
-## **Fetch All Products**
+#### Add a Product
 ```bash
-curl -X GET https://your-api-url/api/products \
--H "Authorization: Bearer <your-token>"
-```
-
----
-
-## **Add a New Product**
-```bash
-curl -X POST https://your-api-url/api/products \
--H "Authorization: Bearer <your-token>" \
+curl -X POST https://e-com-bnev.onrender.com/api/products \
+-H "Authorization: Bearer <your-token-here>" \
 -H "Content-Type: application/json" \
 -d '{
-    "name": "Product Name",
+    "name": "Product 1",
     "price": 100,
-    "description": "Product description",
-    "quantity": 10
+    "stock": 50
 }'
 ```
 
----
-
-## **Fetch All Orders**
+#### List Products with Pagination
 ```bash
-curl -X GET https://your-api-url/api/orders \
--H "Authorization: Bearer <your-token>"
+curl -X GET "https://e-com-bnev.onrender.com/api/products?page=1&limit=10" \
+-H "Authorization: Bearer <your-token-here>"
 ```
 
----
-
-## **Place an Order**
+#### Update a Product
 ```bash
-curl -X POST https://your-api-url/api/orders \
--H "Authorization: Bearer <your-token>" \
+curl -X PUT https://e-com-bnev.onrender.com/api/products/<product-id> \
+-H "Authorization: Bearer <your-token-here>" \
 -H "Content-Type: application/json" \
 -d '{
-    "productId": "product-id",
-    "quantity": 2
+    "price": 120
+}'
+```
+
+#### Delete a Product
+```bash
+curl -X DELETE https://e-com-bnev.onrender.com/api/products/<product-id> \
+-H "Authorization: Bearer <your-token-here>"
+```
+
+### Order Management
+
+#### List Orders
+```bash
+curl -X GET https://e-com-bnev.onrender.com/api/orders \
+-H "Authorization: Bearer <your-token-here>"
+```
+
+#### Mark an Order as Shipped
+```bash
+curl -X PUT https://e-com-bnev.onrender.com/api/orders/<order-id> \
+-H "Authorization: Bearer <your-token-here>" \
+-H "Content-Type: application/json" \
+-d '{
+    "status": "shipped"
 }'
 ```
 
 ---
 
-## **Notes:**
-1. Replace `https://your-api-url` with the base URL of your API.
-2. Replace `<your-token>` with a valid token obtained after logging in.
-3. Replace `product-id` with the ID of the product you want to order.
-4. Ensure your API server is running before executing these commands.
+## Application Structure
 
----
+### Project Layout
 
-These commands provide a quick and efficient way to test the functionality of your API endpoints.
+```
+├── controllers
+│   ├── vendorController.js    # Handles vendor-related logic
+│   ├── productController.js   # Handles product-related logic
+│   ├── orderController.js     # Handles order-related logic
+│
+├── models
+│   ├── Vendor.js              # Defines the Vendor schema
+│   ├── Product.js             # Defines the Product schema
+│   ├── Order.js               # Defines the Order schema
+│
+├── routes
+│   ├── vendorRoutes.js        # Vendor-specific routes
+│   ├── productRoutes.js       # Product-specific routes
+│   ├── orderRoutes.js         # Order-specific routes
+│
+├── middlewares
+│   ├── authMiddleware.js      # JWT authentication middleware
+│   ├── rateLimiter.js         # Rate-limiting middleware
+│
+├── config
+│   ├── db.js                  # Database connection setup
+│
+├── utils
+│   ├── errorHandler.js        # Centralized error handling utility
+│
+├── index.js                   # Entry point of the application
+├── package.json               # Dependencies and scripts
+└── README.md                  # Project documentation
+```
+
+### Steps to Run the Application
+
+1. **Clone the Repository**
+   ```bash
+   git clone <repository-url>
+   cd <repository-directory>
+   ```
+
+2. **Install Dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set Up Environment Variables**
+   Create a `.env` file and include the following:
+   ```env
+   PORT=3000
+   MONGO_URI=<your-mongodb-uri>
+   JWT_SECRET=<your-secret-key>
+   ```
+
+4. **Start the Application**
+   ```bash
+   npm start
+   ```
+
+5. **Test the API Endpoints**
+   Use the provided cURL commands or import the Postman collection for testing.
